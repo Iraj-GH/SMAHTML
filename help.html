@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help & Support</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: "Segoe UI", Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* =========================================================
+           ROOT / SCROLL AREA
+           ========================================================= */
+
+        .root {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scroll-area {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: none;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
+        }
+
+        .scroll-area::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-area::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .scroll-area::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .scroll-area::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .scroll-content {
+            width: 100%;
+            min-height: 100%;
+            padding-bottom: 20px;
+        }
+
+        /* =========================================================
+           WAVE HEADER
+           Equivalent to WaveHeader.paintEvent()
+           ========================================================= */
+
+        .wave-header {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            min-height: 140px;
+            overflow: hidden;
+            background:
+                linear-gradient(
+                    135deg,
+                    #0a192f 0%,
+                    #0e2a47 100%
+                );
+        }
+
+        /*
+         * First QPainterPath equivalent.
+         */
+        .wave-one {
+            position: absolute;
+            left: -1%;
+            bottom: -1px;
+            width: 102%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 1;
+        }
+
+        .wave-one svg,
+        .wave-two svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /*
+         * Second QPainterPath equivalent.
+         */
+        .wave-two {
+            position: absolute;
+            left: -1%;
+            bottom: -1px;
+            width: 102%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 5;
+            width: 100%;
+            height: 100%;
+            padding: 15px 30px 35px 30px;
+            display: flex;
+            align-items: center;
+        }
+
+        .title-layout {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page-title {
+            margin: 0;
+            padding: 0;
+            color: #ffffff;
+            font-size: 22px;
+            line-height: 1.2;
+            font-weight: 700;
+            border: none;
+            background: transparent;
+        }
+
+        .subtitle {
+            margin: 4px 0 0;
+            padding: 0;
+            color: #90e0ef;
+            font-size: 10px;
+            line-height: 1.3;
+            border: none;
+            background: transparent;
+        }
+
+        .header-spacer {
+            flex: 1;
+        }
+
+        /* =========================================================
+           SOS BADGE
+           ========================================================= */
+
+        .sos-badge {
+            width: 65px;
+            height: 65px;
+            min-width: 65px;
+            min-height: 65px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #90e0ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sos-label {
+            color: #d97706;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* =========================================================
+           MAIN CONTENT
+           ========================================================= */
+
+        .content-wrapper {
+            width: 100%;
+            padding: 0 30px;
+        }
+
+        .content-layout {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .section-title {
+            margin: 0;
+            padding: 0;
+            color: #0f172a;
+            font-size: 13px;
+            line-height: 1.3;
+            font-weight: 700;
+        }
+
+        .quick-help-title {
+            margin-top: 10px;
+        }
+
+        /* =========================================================
+           EMAIL CARDS
+           ========================================================= */
+
+        .email-card {
+            width: 100%;
+            min-height: 53px;
+            background: #ffffff;
+            border: 1px solid #e0e8f0;
+            border-radius: 10px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+        }
+
+        .email-icon {
+            width: 30px;
+            min-width: 30px;
+            color: #0077b6;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1;
+            border: none;
+        }
+
+        .email-text {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .email-name {
+            margin: 0;
+            color: #0f172a;
+            font-size: 10px;
+            line-height: 1.3;
+            font-weight: 700;
+            border: none;
+        }
+
+        .email-address {
+            margin: 2px 0 0;
+            color: #64748b;
+            font-size: 9px;
+            line-height: 1.3;
+            border: none;
+            word-break: break-word;
+        }
+
+        .email-spacer {
+            flex: 1;
+            min-width: 10px;
+        }
+
+        .contact-button {
+            width: 85px;
+            height: 32px;
+            min-width: 85px;
+            background: #0077b6;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition:
+                background 0.12s ease,
+                transform 0.08s ease;
+        }
+
+        .contact-button:hover {
+            background: #0096c7;
+        }
+
+        .contact-button:active {
+            background: #03045e;
+            transform: translateY(1px);
+        }
+
+        /* =========================================================
+           FAQ CARDS
+           ========================================================= */
+
+        .faq-card {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e0e8f0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .faq-question {
+            margin: 0;
+            color: #0f172a;
+            font-size: 10px;
+            line-height: 1.35;
+            font-weight: 700;
+            border: none;
+        }
+
+        .faq-answer {
+            margin: 4px 0 0;
+            color: #475569;
+            font-size: 9px;
+            line-height: 1.5;
+            white-space: normal;
+            overflow-wrap: break-word;
+            border: none;
+        }
+
+        /* =========================================================
+           FOOTER / BACK BUTTON
+           ========================================================= */
+
+        .footer {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            padding-top: 2px;
+        }
+
+        .back-button {
+            width: 170px;
+            height: 38px;
+            min-width: 170px;
+            background: #ffffff;
+            color: #0077b6;
+            border: 1px solid #0077b6;
+            border-radius: 6px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition:
+                background 0.12s ease,
+                transform 0.08s ease;
+        }
+
+        .back-button:hover {
+            background: #e0f2fe;
+        }
+
+        .back-button:active {
+            background: #bae6fd;
+            transform: translateY(1px);
+        }
+
+        /* =========================================================
+           MESSAGE BOX
+           ========================================================= */
+
+        .message-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.35);
+        }
+
+        .message-overlay.visible {
+            display: flex;
+        }
+
+        .message-box {
+            width: min(460px, calc(100% - 40px));
+            background: #ffffff;
+            border: 1px solid #e0e8f0;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(15, 23, 42, 0.25);
+            overflow: hidden;
+        }
+
+        .message-title {
+            padding: 14px 18px;
+            color: #0f172a;
+            background: #f8fafc;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .message-content {
+            padding: 18px;
+            color: #475569;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .message-footer {
+            padding: 0 18px 15px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .message-button {
+            height: 34px;
+            padding: 0 18px;
+            background: #0077b6;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .message-button:hover {
+            background: #0096c7;
+        }
+
+        /* =========================================================
+           RESPONSIVE SUPPORT
+           ========================================================= */
+
+        @media (max-width: 700px) {
+
+            .header-content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .content-wrapper {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .email-card {
+                flex-wrap: wrap;
+                row-gap: 8px;
+            }
+
+            .email-spacer {
+                display: none;
+            }
+
+            .contact-button {
+                margin-left: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .page-title {
+                font-size: 19px;
+            }
+
+            .sos-badge {
+                width: 55px;
+                height: 55px;
+                min-width: 55px;
+                min-height: 55px;
+            }
+
+            .sos-label {
+                font-size: 11px;
+            }
+
+            .email-icon {
+                width: 25px;
+                min-width: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="root">
+
+        <div class="scroll-area">
+
+            <div class="scroll-content">
+
+                <!-- =================================================
+                     WAVE HEADER
+                     ================================================= -->
+
+                <header class="wave-header">
+
+                    <!-- First QPainterPath -->
+                    <div class="wave-one" aria-hidden="true">
+                        <svg
+                            viewBox="0 0 1000 140"
+                            preserveAspectRatio="none"
+                        >
+                            <defs>
+                                <linearGradient
+                                    id="waveGradient1"
+                                    x1="0%"
+                                    y1="0%"
+                                    x2="100%"
+                                    y2="0%"
+                                >
+                                    <stop
+                                        offset="0%"
+                                        stop-color="#0077b6"
+                                        stop-opacity="0.47"
+                                    />
+                                    <stop
+                                        offset="100%"
+                                        stop-color="#48cae4"
+                                        stop-opacity="0.31"
+                                    />
+                                </linearGradient>
+                            </defs>
+
+                            <path
+                                d="
+                                    M 0 98
+                                    C 300 56,
+                                      600 126,
+                                      1000 70
+                                    L 1000 140
+                                    L 0 140
+                                    Z
+                                "
+                                fill="url(#waveGradient1)"
+                            />
+                        </svg>
+                    </div>
+
+                    <!-- Second QPainterPath -->
+                    <div class="wave-two" aria-hidden="true">
+                        <svg
+                            viewBox="0 0 1000 140"
+                            preserveAspectRatio="none"
+                        >
+                            <defs>
+                                <linearGradient
+                                    id="waveGradient2"
+                                    x1="0%"
+                                    y1="0%"
+                                    x2="100%"
+                                    y2="0%"
+                                >
+                                    <stop
+                                        offset="0%"
+                                        stop-color="#00b4d8"
+                                        stop-opacity="0.63"
+                                    />
+                                    <stop
+                                        offset="100%"
+                                        stop-color="#90e0ef"
+                                        stop-opacity="0.47"
+                                    />
+                                </linearGradient>
+                            </defs>
+
+                            <path
+                                d="
+                                    M 0 119
+                                    C 250 91,
+                                      700 133,
+                                      1000 91
+                                    L 1000 140
+                                    L 0 140
+                                    Z
+                                "
+                                fill="url(#waveGradient2)"
+                            />
+                        </svg>
+                    </div>
+
+                    <!-- Header widgets -->
+                    <div class="header-content">
+
+                        <div class="title-layout">
+
+                            <h1 class="page-title">
+                                Help &amp; Support
+                            </h1>
+
+                            <div class="subtitle">
+                                Classroom Management System
+                            </div>
+
+                        </div>
+
+                        <div class="header-spacer"></div>
+
+                        <div class="sos-badge">
+
+                            <div class="sos-label">
+                                SOS
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </header>
+
+
+                <!-- =================================================
+                     MAIN CONTENT
+                     ================================================= -->
+
+                <section class="content-wrapper">
+
+                    <div class="content-layout">
+
+                        <h2 class="section-title">
+                            Contact &amp; Support
+                        </h2>
+
+
+                        <!-- =================================================
+                             SUPPORT EMAIL 1
+                             ================================================= -->
+
+                        <div class="email-card">
+
+                            <div class="email-icon">
+                                ✉
+                            </div>
+
+                            <div class="email-text">
+
+                                <div class="email-name">
+                                    Support Team
+                                </div>
+
+                                <div class="email-address">
+                                    irajmadhav061@gmail.com
+                                </div>
+
+                            </div>
+
+                            <div class="email-spacer"></div>
+
+                            <button
+                                class="contact-button"
+                                type="button"
+                                data-email="irajmadhav061@gmail.com"
+                            >
+                                Contact
+                            </button>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             SUPPORT EMAIL 2
+                             ================================================= -->
+
+                        <div class="email-card">
+
+                            <div class="email-icon">
+                                ✉
+                            </div>
+
+                            <div class="email-text">
+
+                                <div class="email-name">
+                                    Support Team
+                                </div>
+
+                                <div class="email-address">
+                                    pandeyaayush978@gmail.com
+                                </div>
+
+                            </div>
+
+                            <div class="email-spacer"></div>
+
+                            <button
+                                class="contact-button"
+                                type="button"
+                                data-email="pandeyaayush978@gmail.com"
+                            >
+                                Contact
+                            </button>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             SUPPORT EMAIL 3
+                             ================================================= -->
+
+                        <div class="email-card">
+
+                            <div class="email-icon">
+                                ✉
+                            </div>
+
+                            <div class="email-text">
+
+                                <div class="email-name">
+                                    Support Team
+                                </div>
+
+                                <div class="email-address">
+                                    hellopratik2021@gmail.com
+                                </div>
+
+                            </div>
+
+                            <div class="email-spacer"></div>
+
+                            <button
+                                class="contact-button"
+                                type="button"
+                                data-email="hellopratik2021@gmail.com"
+                            >
+                                Contact
+                            </button>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             SUPPORT EMAIL 4
+                             ================================================= -->
+
+                        <div class="email-card">
+
+                            <div class="email-icon">
+                                ✉
+                            </div>
+
+                            <div class="email-text">
+
+                                <div class="email-name">
+                                    Support Team
+                                </div>
+
+                                <div class="email-address">
+                                    kaflealdrin@gmail.com
+                                </div>
+
+                            </div>
+
+                            <div class="email-spacer"></div>
+
+                            <button
+                                class="contact-button"
+                                type="button"
+                                data-email="kaflealdrin@gmail.com"
+                            >
+                                Contact
+                            </button>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             QUICK HELP
+                             ================================================= -->
+
+                        <h2 class="section-title quick-help-title">
+                            Quick Help
+                        </h2>
+
+
+                        <!-- FAQ 1 -->
+
+                        <div class="faq-card">
+
+                            <div class="faq-question">
+                                Attendance is not being marked.
+                            </div>
+
+                            <div class="faq-answer">
+                                Make sure the barcode/QR scanner is connected and system active.
+                            </div>
+
+                        </div>
+
+
+                        <!-- FAQ 2 -->
+
+                        <div class="faq-card">
+
+                            <div class="faq-question">
+                                The application is not opening.
+                            </div>
+
+                            <div class="faq-answer">
+                                Restart application and verify Python files are in the correct path.
+                            </div>
+
+                        </div>
+
+
+                        <!-- FAQ 3 -->
+
+                        <div class="faq-card">
+
+                            <div class="faq-question">
+                                I need further assistance.
+                            </div>
+
+                            <div class="faq-answer">
+                                Use the Contact buttons above to reach the support team directly.
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================================
+                             BACK TO DASHBOARD
+                             ================================================= -->
+
+                        <div class="footer">
+
+                            <button
+                                id="backButton"
+                                class="back-button"
+                                type="button"
+                            >
+                                ← Back to Dashboard
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =============================================================
+         QMessageBox EQUIVALENT
+         ============================================================= -->
+
+    <div
+        id="messageOverlay"
+        class="message-overlay"
+    >
+
+        <div
+            class="message-box"
+            role="dialog"
+            aria-modal="true"
+        >
+
+            <div
+                id="messageTitle"
+                class="message-title"
+            >
+                Unable to Open Email Client
+            </div>
+
+            <div
+                id="messageContent"
+                class="message-content"
+            >
+            </div>
+
+            <div class="message-footer">
+
+                <button
+                    id="messageButton"
+                    class="message-button"
+                    type="button"
+                >
+                    OK
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        /* =========================================================
+           HELP.PY → JAVASCRIPT
+           ========================================================= */
+
+
+        /* =========================================================
+           PREVIOUS WINDOW / DASHBOARD NAVIGATION
+           =========================================================
+
+           PyQt6 keeps a direct reference to previous_window.
+
+           On the web, browser history provides the equivalent
+           navigation mechanism.
+
+           If help.html was opened from another page, clicking
+           "Back to Dashboard" first attempts to return through
+           browser history.
+
+           If there is no useful history entry, dashboard.html
+           is used as the fallback.
+        */
+
+        let returningToDashboard = false;
+
+
+        function goBack() {
+
+            returningToDashboard = true;
+
+            /*
+             * Equivalent of previous_window.show(),
+             * raise_(), activateWindow(), and close().
+             */
+            if (
+                window.history.length > 1 &&
+                document.referrer
+            ) {
+
+                window.history.back();
+
+            }
+            else {
+
+                window.location.href =
+                    "dashboard.html";
+            }
+        }
+
+
+        document.getElementById(
+            "backButton"
+        ).addEventListener(
+            "click",
+            goBack
+        );
+
+
+        /* =========================================================
+           EMAIL HANDLER
+           =========================================================
+
+           PyQt6:
+
+               webbrowser.open(f"mailto:{email}")
+
+           Fallback:
+
+               Gmail compose URL
+        */
+
+        function openEmail(email) {
+
+            try {
+
+                const mailtoUrl =
+                    `mailto:${encodeURIComponent(email)}`;
+
+                /*
+                 * Attempt the system email client first.
+                 */
+                const emailWindow =
+                    window.open(
+                        mailtoUrl,
+                        "_blank"
+                    );
+
+
+                /*
+                 * Browser security can prevent mailto from
+                 * reporting success. The fallback is therefore
+                 * triggered shortly afterward when appropriate.
+                 */
+                setTimeout(
+                    function() {
+
+                        /*
+                         * Gmail compose equivalent of:
+                         *
+                         * https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=...
+                         */
+                        const gmailUrl =
+                            "https://mail.google.com/mail/" +
+                            "?view=cm" +
+                            "&fs=1" +
+                            "&tf=1" +
+                            `&to=${encodeURIComponent(email)}`;
+
+                        /*
+                         * If the current page remains active,
+                         * opening Gmail provides the same practical
+                         * fallback behavior as the Python version.
+                         */
+                        if (
+                            document.visibilityState ===
+                            "visible"
+                        ) {
+
+                            window.open(
+                                gmailUrl,
+                                "_blank"
+                            );
+                        }
+
+                    },
+                    700
+                );
+
+            }
+            catch (error) {
+
+                showMessage(
+                    "Unable to Open Email Client",
+                    "Could not open an email application.\n\n" +
+                    "Error: " +
+                    error
+                );
+            }
+        }
+
+
+        /* =========================================================
+           CONTACT BUTTONS
+           ========================================================= */
+
+        const contactButtons =
+            document.querySelectorAll(
+                ".contact-button"
+            );
+
+
+        contactButtons.forEach(
+            function(button) {
+
+                button.addEventListener(
+                    "click",
+                    function() {
+
+                        const email =
+                            button.dataset.email;
+
+                        if (email) {
+                            openEmail(email);
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =========================================================
+           MESSAGE BOX
+           ========================================================= */
+
+        function showMessage(
+            title,
+            message
+        ) {
+
+            document.getElementById(
+                "messageTitle"
+            ).textContent = title;
+
+            document.getElementById(
+                "messageContent"
+            ).textContent = message;
+
+            document.getElementById(
+                "messageOverlay"
+            ).classList.add(
+                "visible"
+            );
+        }
+
+
+        function closeMessage() {
+
+            document.getElementById(
+                "messageOverlay"
+            ).classList.remove(
+                "visible"
+            );
+        }
+
+
+        document.getElementById(
+            "messageButton"
+        ).addEventListener(
+            "click",
+            closeMessage
+        );
+
+
+        document.getElementById(
+            "messageOverlay"
+        ).addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target ===
+                    event.currentTarget
+                ) {
+
+                    closeMessage();
+
+                }
+
+            }
+        );
+
+
+        /* =========================================================
+           PYQT closeEvent EQUIVALENT
+           =========================================================
+
+           Desktop behavior:
+
+           - If Help is closed after pressing Back:
+               previous window is already restored.
+
+           - If Help is closed normally:
+               previous_window is shown again.
+
+           Browser behavior:
+
+           The browser's native tab/window close behavior is
+           controlled by the browser. The Back button explicitly
+           performs the intended navigation.
+        */
+
+        window.addEventListener(
+            "beforeunload",
+            function() {
+
+                if (!returningToDashboard) {
+
+                    /*
+                     * No forced navigation is performed here.
+                     * This intentionally avoids interfering with
+                     * browser tab/window closing.
+                     */
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
