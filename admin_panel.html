@@ -1,0 +1,3131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOS Hermann Gmeiner School Gandaki Admin Panel</title>
+
+<style>
+*{
+    box-sizing:border-box
+}
+
+html,
+body{
+    margin:0;
+    width:100%;
+    height:100%;
+    font-family:"Segoe UI",Arial,sans-serif;
+    color:#1a2a3a
+}
+
+body{
+    overflow:hidden;
+    background:#eaf5fc
+}
+
+button,
+input,
+textarea,
+select{
+    font:inherit
+}
+
+button{
+    cursor:pointer
+}
+
+#app{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#eaf5fc
+}
+
+canvas{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:0
+}
+
+.shell{
+    position:relative;
+    z-index:1;
+    width:100%;
+    height:100%;
+    display:flex
+}
+
+.sidebar{
+    width:260px;
+    min-width:260px;
+    height:100%;
+    background:rgba(255,255,255,.95);
+    border-right:1px solid #cbe3f5;
+    padding:15px;
+    display:flex;
+    flex-direction:column
+}
+
+.logo-wrap{
+    display:flex;
+    justify-content:center;
+    margin-bottom:10px
+}
+
+.logo{
+    width:65px;
+    height:65px;
+    object-fit:contain
+}
+
+.school-box{
+    width:100%;
+    min-height:120px;
+    background:#0077c8;
+    border-radius:10px;
+    padding:18px 10px;
+    border:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:-80px;
+}
+
+.school-box div{
+    width:100%;
+    font-size:16px;
+    font-weight:700;
+    color:#fff;
+    text-align:center;
+    line-height:1.3
+}
+
+.mid-card{
+    background:#e1f0fa;
+    border-radius:8px;
+    border:1px solid #b2d4ee;
+    padding:16px 8px;
+    margin:12px 0 15px;
+    min-height:60px;
+    display:flex;
+    align-items:center;
+    justify-content:center
+}
+
+.mid-card div{
+    text-align:center;
+    color:#004080;
+    font-size:8px;
+    font-weight:700
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top:55px
+}
+
+.nav button{
+    height:40px;
+    border:0;
+    border-radius:6px;
+    text-align:left;
+    padding-left:12px;
+    font-weight:700;
+    font-size:13px;
+    background:transparent;
+    color:#2c3e50
+}
+
+.nav button:hover{
+    background:#e1f0fa;
+    color:#0066b2
+}
+
+.nav button.active{
+    background:#0077c8;
+    color:#fff
+}
+
+.spacer{
+    flex:1
+}
+
+.content{
+    flex:1;
+    min-width:0;
+    height:100%;
+    display:flex;
+    flex-direction:column
+}
+
+.header{
+    height:45px;
+    min-height:45px;
+    border-bottom:1px solid #cbe3f5;
+    display:flex;
+    align-items:center;
+    padding:0 20px;
+    background:transparent
+}
+
+.title{
+    font-size:11px;
+    font-weight:700;
+    color:#0066b2
+}
+
+.time{
+    margin-left:auto;
+    font-size:11px;
+    font-weight:700;
+    color:#004080
+}
+
+.pages{
+    flex:1;
+    min-height:0;
+    overflow:auto;
+    padding:0
+}
+
+.page{
+    display:none;
+    padding:20px 25px 30px;
+    min-height:100%
+}
+
+.page.active{
+    display:block
+}
+
+h1{
+    font-size:16px;
+    color:#004080;
+    margin:0 0 15px;
+    font-weight:700
+}
+
+.card{
+    background:rgba(255,255,255,.95);
+    border-radius:10px;
+    border:1px solid #cbe3f5;
+    padding:16px
+}
+
+.row{
+    display:flex;
+    gap:15px;
+    align-items:center
+}
+
+.wrap{
+    flex-wrap:wrap
+}
+
+label{
+    font-weight:700;
+    color:#2c3e50;
+    font-size:13px
+}
+
+input,
+textarea,
+select{
+    background:#fff;
+    color:#1a2a3a;
+    border:1px solid #b2d4ee;
+    border-radius:5px;
+    padding:6px 8px;
+    outline:none
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border:1px solid #0077c8
+}
+
+input,
+select{
+    height:34px
+}
+
+textarea{
+    resize:none
+}
+
+/* =========================================================
+   NOTICES / PDF
+   ========================================================= */
+
+#page-notices .card{
+    padding:18px
+}
+
+#page-notices .row{
+    gap:12px;
+    margin-bottom:4px
+}
+
+#page-notices .notice-title{
+    width:100%;
+    margin-top:12px;
+    height:36px
+}
+
+#page-notices .notice-body{
+    width:100%;
+    height:100px;
+    margin-top:10px;
+    padding-top:9px;
+    padding-bottom:9px
+}
+
+.notice-title{
+    width:100%;
+    margin-top:8px
+}
+
+.notice-body{
+    width:100%;
+    height:70px
+}
+
+.action-row{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-top:12px
+}
+
+#page-notices .action-row:last-child{
+    margin-top:14px
+}
+
+.btn-primary{
+    background:#0077c8;
+    color:#fff;
+    border:0;
+    border-radius:5px;
+    font-weight:700;
+    padding:9px 16px
+}
+
+.btn-primary:hover{
+    background:#005fa3
+}
+
+.btn-secondary{
+    background:#e1f0fa;
+    color:#0066b2;
+    border:1px solid #b2d4ee;
+    border-radius:5px;
+    font-weight:700;
+    padding:9px 16px
+}
+
+.btn-secondary:hover{
+    background:#cbe3f5
+}
+
+.btn-warn{
+    background:#f39c12;
+    color:#fff;
+    border:0;
+    border-radius:5px;
+    font-weight:700;
+    padding:9px 14px
+}
+
+.btn-warn:hover{
+    background:#d68910
+}
+
+.btn-danger{
+    background:#e74c3c;
+    color:#fff;
+    border:0;
+    border-radius:4px;
+    padding:4px 8px;
+    font-weight:700
+}
+
+.section-head{
+    font-size:10px;
+    font-weight:700;
+    color:#004080;
+    margin:18px 0 10px
+}
+
+.table-wrap{
+    width:100%;
+    overflow:auto;
+    background:#ffffff;
+    border-radius:8px;
+    border:1px solid #cbe3f5;
+    min-height:250px
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:720px;
+    background:#ffffff
+}
+
+thead{
+    background:#0077c8
+}
+
+tbody{
+    background:#ffffff
+}
+
+th{
+    background:#0077c8;
+    color:#fff;
+    padding:8px;
+    font-weight:700;
+    font-size:12px;
+    text-align:left
+}
+
+td{
+    padding:8px;
+    border-top:1px solid #e1f0fa;
+    font-size:12px;
+    background:#ffffff
+}
+
+/* =========================================================
+   SETTINGS
+   ========================================================= */
+
+.settings-grid{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    width:100%
+}
+
+.settings-grid>.card{
+    width:100%;
+    flex:none;
+    padding:18px
+}
+
+.settings-grid h3{
+    margin:0;
+    color:#004080;
+    font-size:14px
+}
+
+.settings-grid .muted{
+    margin:7px 0 12px !important
+}
+
+.settings-grid input{
+    width:100%
+}
+
+.settings-grid .btn-primary,
+.settings-grid .btn-warn,
+.settings-grid .btn-danger{
+    min-height:36px
+}
+
+.muted{
+    font-size:9px;
+    color:#64748b
+}
+
+.status{
+    background:#e1f0fa;
+    border:1px solid #b2d4ee;
+    border-radius:6px;
+    padding:9px;
+    color:#004080;
+    font-size:8px;
+    font-weight:700;
+    margin-top:10px
+}
+
+.file-name{
+    font-size:12px;
+    color:#7f8c8d;
+    font-style:italic
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-backdrop{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.35);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:20
+}
+
+.modal-backdrop.show{
+    display:flex
+}
+
+.modal{
+    width:min(620px,92vw);
+    max-height:85vh;
+    overflow:auto;
+    background:#fff;
+    border:1px solid #cbe3f5;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 20px 50px rgba(0,0,0,.2)
+}
+
+.modal h2{
+    margin:0 0 12px;
+    color:#004080;
+    font-size:18px
+}
+
+.help-box{
+    background:#f7fbff;
+    border:1px solid #d8ecfa;
+    border-radius:8px;
+    padding:10px;
+    margin-top:8px
+}
+
+.toast{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:#004080;
+    color:#fff;
+    padding:10px 14px;
+    border-radius:8px;
+    display:none;
+    z-index:30;
+    font-size:13px
+}
+
+.toast.show{
+    display:block
+}
+
+/* =========================================================
+   BACKEND STATUS
+   ========================================================= */
+
+.backend-status{
+    display:none;
+    margin-top:8px;
+    padding:8px;
+    border-radius:6px;
+    font-size:9px;
+    font-weight:700;
+    background:#e1f0fa;
+    border:1px solid #b2d4ee;
+    color:#004080
+}
+
+.backend-status.visible{
+    display:block
+}
+
+@media(max-width:850px){
+
+    .sidebar{
+        width:210px;
+        min-width:210px
+    }
+
+    .row{
+        align-items:stretch
+    }
+
+    .settings-grid{
+        flex-direction:column
+    }
+
+    #page-notices .row{
+        flex-direction:column;
+        align-items:stretch
+    }
+
+    #page-notices .row label{
+        margin-bottom:-5px
+    }
+
+    #page-notices .action-row{
+        flex-wrap:wrap
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<canvas id="bg"></canvas>
+
+<div class="shell">
+
+<aside class="sidebar">
+
+<div class="logo-wrap">
+<img
+    id="logo"
+    class="logo"
+    src="logo.png"
+    alt="SOS SMA logo"
+    onerror="this.style.visibility='hidden'"
+>
+</div>
+
+<div class="school-box">
+<div>
+SOS Hermann Gmeiner<br>
+School Gandaki
+</div>
+</div>
+
+<div class="mid-card">
+<div>● Portal Active &amp; Synced</div>
+</div>
+
+<nav class="nav">
+
+<button
+    data-page="notices"
+    class="active"
+>
+    Notices &amp; PDFs
+</button>
+
+<button data-page="subs">
+    Substitutions
+</button>
+
+<button data-page="attendance">
+    Attendance Section
+</button>
+
+<button data-page="settings">
+    Settings
+</button>
+
+</nav>
+
+<div class="spacer"></div>
+
+</aside>
+
+
+<main class="content">
+
+<header class="header">
+
+<div class="title">
+Administrative Control Center
+</div>
+
+<div
+    class="time"
+    id="timeLabel"
+></div>
+
+</header>
+
+
+<section class="pages">
+
+<!-- =========================================================
+     NOTICES
+     ========================================================= -->
+
+<div
+    id="page-notices"
+    class="page active"
+>
+
+<h1>
+Publish Notice &amp; Attach PDF
+</h1>
+
+<div class="card">
+
+<div class="row wrap">
+
+<label for="target">
+Target Group:
+</label>
+
+<select id="target"></select>
+
+<label for="section">
+Section:
+</label>
+
+<select id="section"></select>
+
+</div>
+
+
+<input
+    id="noticeTitle"
+    class="notice-title"
+    placeholder="Notice Title"
+>
+
+
+<textarea
+    id="noticeBody"
+    class="notice-body"
+    placeholder="Write the notice content here..."
+></textarea>
+
+
+<div class="action-row">
+
+<input
+    id="pdf"
+    type="file"
+    accept=".pdf"
+    hidden
+>
+
+<button
+    class="btn-secondary"
+    id="uploadBtn"
+>
+    Select PDF Document
+</button>
+
+<span
+    class="file-name"
+    id="fileLabel"
+>
+    No PDF selected
+</span>
+
+</div>
+
+
+<div class="action-row">
+
+<button
+    class="btn-primary"
+    id="postBtn"
+>
+    Publish Notice
+</button>
+
+<button
+    class="btn-secondary"
+    id="historyBtn"
+>
+    Notice History
+</button>
+
+</div>
+
+<div
+    id="noticeBackendStatus"
+    class="backend-status"
+></div>
+
+</div>
+
+
+<div class="section-head">
+Active Notices (Auto-expires after 12h)
+</div>
+
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Target</th>
+<th>Title</th>
+<th>PDF Attachment</th>
+<th>Date / Time</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="noticeTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     SUBSTITUTIONS
+     ========================================================= -->
+
+<div
+    id="page-subs"
+    class="page"
+>
+
+<h1>
+Manage Daily Substitutions
+</h1>
+
+<div class="card">
+
+<div class="row wrap">
+
+<input
+    id="subClass"
+    placeholder="Class (e.g. 6)"
+>
+
+<input
+    id="subSec"
+    placeholder="Sec (e.g. A)"
+>
+
+<input
+    id="subPeriod"
+    placeholder="Period (1-8)"
+>
+
+<input
+    id="subAbsent"
+    placeholder="Absent Teacher"
+>
+
+<input
+    id="subSubstitute"
+    placeholder="Substitute Teacher"
+>
+
+<button
+    class="btn-primary"
+    id="addSubBtn"
+>
+    Add
+</button>
+
+</div>
+
+</div>
+
+<div style="height:10px"></div>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Class</th>
+<th>Sec</th>
+<th>Period</th>
+<th>Absent Teacher</th>
+<th>Substitute</th>
+<th>Date / Time</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="subTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     ATTENDANCE
+     ========================================================= -->
+
+<div
+    id="page-attendance"
+    class="page"
+>
+
+<h1>
+Class &amp; Section Attendance Portal
+</h1>
+
+<div
+    class="card"
+    style="
+        min-height:420px;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        gap:20px
+    "
+>
+
+<div class="row">
+
+<label for="attClass">
+Select Class:
+</label>
+
+<select id="attClass"></select>
+
+</div>
+
+
+<div class="row">
+
+<label for="attSec">
+Select Section:
+</label>
+
+<select id="attSec"></select>
+
+</div>
+
+
+<button
+    class="btn-primary"
+    style="
+        width:260px;
+        height:45px;
+        font-size:14px
+    "
+    id="enterAttendance"
+>
+    Enter Attendance Display
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     SETTINGS
+     ========================================================= -->
+
+<div
+    id="page-settings"
+    class="page"
+>
+
+<h1>
+System Settings &amp; Configuration
+</h1>
+
+<div class="settings-grid">
+
+<div class="card">
+
+<h3>
+Admin Authentication Credentials
+</h3>
+
+<div class="muted">
+Update login credentials saved to local configuration.
+</div>
+
+<input
+    id="newAdminId"
+    placeholder="New Admin ID"
+    style="margin-bottom:8px"
+>
+
+<input
+    id="newAdminPass"
+    placeholder="New Password"
+    type="password"
+    style="margin-bottom:8px"
+>
+
+<button
+    class="btn-primary"
+    id="saveCreds"
+>
+    Update Credentials
+</button>
+
+</div>
+
+
+<div class="card">
+
+<h3>
+System Operations &amp; Maintenance
+</h3>
+
+<div class="muted">
+Quick system controls, help user manual, and session exit.
+</div>
+
+<button
+    class="btn-warn"
+    id="helpBtn"
+    style="
+        width:100%;
+        margin-bottom:8px
+    "
+>
+    Launch User Manual / Help Guide
+</button>
+
+<button
+    class="btn-danger"
+    id="logoutBtn"
+    style="
+        width:100%;
+        height:36px
+    "
+>
+    Logout &amp; Return to Portal
+</button>
+
+<div class="status">
+System Status: Active &amp; Synced
+<br>
+Developer Master Fallback: Active
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- =========================================================
+     MODAL
+     ========================================================= -->
+
+<div
+    class="modal-backdrop"
+    id="modal"
+>
+
+<div class="modal">
+
+<h2 id="modalTitle"></h2>
+
+<div id="modalBody"></div>
+
+<div
+    style="
+        text-align:right;
+        margin-top:15px
+    "
+>
+<button
+    class="btn-secondary"
+    id="modalClose"
+>
+    Close
+</button>
+</div>
+
+</div>
+
+</div>
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+<script>
+/* =========================================================
+   CONFIGURATION
+   ========================================================= */
+
+/*
+ * These endpoints are the bridge between this HTML frontend
+ * and the existing Python network_sync.py / filesystem logic.
+ *
+ * Expected Python bridge behavior:
+ *
+ * GET  /api/admin/data
+ *      -> returns the same object produced by
+ *         fetch_network_data("data.json")
+ *
+ * POST /api/admin/data
+ *      body -> complete JSON data object
+ *      -> Python should save data.json and call
+ *         push_cloud_data(data)
+ *
+ * POST /api/admin/upload-pdf
+ *      multipart/form-data:
+ *         file = selected PDF
+ *
+ * POST /api/admin/credentials
+ *      JSON:
+ *         {admin_id:"...", password:"..."}
+ *
+ * GET /api/admin/credentials
+ *      -> current credentials
+ *
+ * The HTML does not invent the implementation of network_sync.py.
+ * It calls this bridge so the existing Python backend remains
+ * responsible for cloud synchronization.
+ */
+
+const BACKEND_BASE_URL="";
+
+const DATA_ENDPOINT=
+    BACKEND_BASE_URL+"/api/admin/data";
+
+const CREDENTIALS_ENDPOINT=
+    BACKEND_BASE_URL+"/api/admin/credentials";
+
+const PDF_UPLOAD_ENDPOINT=
+    BACKEND_BASE_URL+"/api/admin/upload-pdf";
+
+const ATTENDANCE_PAGE=
+    "attendancedisplay.html";
+
+const EXPIRATION_HOURS=12;
+
+const TARGETS=[
+    "Class 6-12",
+    "Class 6-10",
+    "Class 11-12",
+    "Class 6",
+    "Class 7",
+    "Class 8",
+    "Class 9",
+    "Class 10",
+    "Class 11",
+    "Class 12",
+    "Custom Selection / Range..."
+];
+
+const LOCAL_DATA_KEY="sma_data";
+const LOCAL_CREDS_KEY="sma_admin_credentials";
+
+const $=id=>document.getElementById(id);
+
+
+/* =========================================================
+   BASIC HELPERS
+   ========================================================= */
+
+function nowISO(){
+    return new Date().toISOString();
+}
+
+
+function parseISO(v){
+
+    const d=new Date(v);
+
+    return isNaN(d)
+        ? null
+        : d;
+}
+
+
+function recent(
+    v,
+    max=EXPIRATION_HOURS
+){
+
+    const d=parseISO(v);
+
+    if(!d){
+        return true;
+    }
+
+    return (
+        Date.now()-d.getTime()
+    ) < max*3600000;
+}
+
+
+function esc(v){
+
+    return String(v??"")
+        .replace(
+            /[&<>"']/g,
+            m=>({
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#39;"
+            }[m])
+        );
+}
+
+
+function toast(msg){
+
+    $("toast").textContent=msg;
+
+    $("toast").classList.add(
+        "show"
+    );
+
+    setTimeout(
+        ()=>
+            $("toast")
+                .classList.remove("show"),
+        2500
+    );
+}
+
+
+function modal(
+    title,
+    html
+){
+
+    $("modalTitle").textContent=title;
+
+    $("modalBody").innerHTML=html;
+
+    $("modal").classList.add(
+        "show"
+    );
+}
+
+
+$("modalClose").onclick=()=>
+    $("modal")
+        .classList.remove("show");
+
+
+$("modal").onclick=e=>{
+
+    if(e.target.id==="modal"){
+        $("modal")
+            .classList.remove("show");
+    }
+
+};
+
+
+/* =========================================================
+   LOCAL FALLBACK
+   ========================================================= */
+
+function readLocalData(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                LOCAL_DATA_KEY
+            )||"{}"
+        );
+
+    }
+    catch{
+
+        return {};
+
+    }
+}
+
+
+function saveLocalData(data){
+
+    localStorage.setItem(
+        LOCAL_DATA_KEY,
+        JSON.stringify(data)
+    );
+}
+
+
+/* =========================================================
+   BACKEND BRIDGE
+   ========================================================= */
+
+async function fetchBackendData(){
+
+    if(!BACKEND_BASE_URL){
+        throw new Error(
+            "Backend bridge URL is not configured."
+        );
+    }
+
+    const response=
+        await fetch(
+            DATA_ENDPOINT,
+            {
+                method:"GET",
+                headers:{
+                    "Accept":
+                        "application/json"
+                },
+                cache:"no-cache"
+            }
+        );
+
+    if(!response.ok){
+
+        throw new Error(
+            `Network data request failed: `+
+            `${response.status} `+
+            `${response.statusText}`
+        );
+    }
+
+    return await response.json();
+}
+
+
+async function saveBackendData(data){
+
+    if(!BACKEND_BASE_URL){
+        throw new Error(
+            "Backend bridge URL is not configured."
+        );
+    }
+
+    const response=
+        await fetch(
+            DATA_ENDPOINT,
+            {
+                method:"POST",
+                headers:{
+                    "Content-Type":
+                        "application/json",
+
+                    "Accept":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify(data)
+            }
+        );
+
+    if(!response.ok){
+
+        throw new Error(
+            `Network data save failed: `+
+            `${response.status} `+
+            `${response.statusText}`
+        );
+    }
+
+    return await response.json()
+        .catch(()=>({success:true}));
+}
+
+
+async function readData(){
+
+    if(BACKEND_BASE_URL){
+
+        try{
+
+            const data=
+                await fetchBackendData();
+
+            if(data){
+                return data;
+            }
+
+        }
+        catch(error){
+
+            console.error(
+                "Network data fetch failed:",
+                error
+            );
+
+        }
+
+    }
+
+    return readLocalData();
+}
+
+
+async function saveData(data){
+
+    saveLocalData(data);
+
+    if(!BACKEND_BASE_URL){
+
+        return true;
+    }
+
+    try{
+
+        await saveBackendData(data);
+
+        return true;
+
+    }
+    catch(error){
+
+        console.error(
+            "Cloud synchronization failed:",
+            error
+        );
+
+        /*
+         * Preserve the original Python behavior:
+         * local data remains saved even if cloud
+         * synchronization fails.
+         */
+        return true;
+    }
+}
+
+
+/* =========================================================
+   PDF UPLOAD BRIDGE
+   ========================================================= */
+
+async function uploadPdfToBackend(file){
+
+    if(!BACKEND_BASE_URL){
+
+        /*
+         * Browser-only fallback:
+         * return a base64 representation so the notice
+         * can still retain the PDF contents locally.
+         */
+        return await fileToBase64(file);
+    }
+
+    const formData=
+        new FormData();
+
+    formData.append(
+        "file",
+        file
+    );
+
+    const response=
+        await fetch(
+            PDF_UPLOAD_ENDPOINT,
+            {
+                method:"POST",
+                body:formData
+            }
+        );
+
+    if(!response.ok){
+
+        throw new Error(
+            `PDF upload failed: `+
+            `${response.status} `+
+            `${response.statusText}`
+        );
+    }
+
+    return await response.json();
+}
+
+
+function fileToBase64(file){
+
+    return new Promise(
+        (resolve,reject)=>{
+
+            const reader=
+                new FileReader();
+
+            reader.onload=()=>
+                resolve(
+                    String(reader.result)
+                        .split(",")[1]||""
+                );
+
+            reader.onerror=()=>
+                reject(
+                    reader.error||
+                    new Error(
+                        "Could not read PDF."
+                    )
+                );
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+}
+
+
+/* =========================================================
+   CREDENTIAL BRIDGE
+   ========================================================= */
+
+async function loadCredentials(){
+
+    if(BACKEND_BASE_URL){
+
+        try{
+
+            const response=
+                await fetch(
+                    CREDENTIALS_ENDPOINT,
+                    {
+                        method:"GET",
+                        headers:{
+                            "Accept":
+                                "application/json"
+                        },
+                        cache:"no-cache"
+                    }
+                );
+
+            if(response.ok){
+
+                const credentials=
+                    await response.json();
+
+                if(credentials){
+
+                    return credentials;
+                }
+            }
+
+        }
+        catch(error){
+
+            console.error(
+                "Credential fetch failed:",
+                error
+            );
+
+        }
+    }
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(
+                LOCAL_CREDS_KEY
+            )
+        )||{
+            admin_id:"SOSADMIN1",
+            password:"ADMIN404"
+        };
+
+    }
+    catch{
+
+        return {
+            admin_id:"SOSADMIN1",
+            password:"ADMIN404"
+        };
+    }
+}
+
+
+async function saveCredentialsToBackend(
+    adminId,
+    password
+){
+
+    localStorage.setItem(
+        LOCAL_CREDS_KEY,
+        JSON.stringify({
+            admin_id:adminId,
+            password:password
+        })
+    );
+
+    if(!BACKEND_BASE_URL){
+        return true;
+    }
+
+    const response=
+        await fetch(
+            CREDENTIALS_ENDPOINT,
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json",
+
+                    "Accept":
+                        "application/json"
+                },
+
+                body:
+                    JSON.stringify({
+                        admin_id:adminId,
+                        password:password
+                    })
+            }
+        );
+
+    if(!response.ok){
+
+        throw new Error(
+            `Credential save failed: `+
+            `${response.status} `+
+            `${response.statusText}`
+        );
+    }
+
+    return true;
+}
+
+
+/* =========================================================
+   BACKEND STATUS
+   ========================================================= */
+
+function showBackendStatus(
+    message,
+    error=false
+){
+
+    const el=
+        $("noticeBackendStatus");
+
+    if(!el){
+        return;
+    }
+
+    el.textContent=message;
+
+    el.classList.add(
+        "visible"
+    );
+
+    if(error){
+
+        el.style.backgroundColor=
+            "#fff5f5";
+
+        el.style.borderColor=
+            "#f2b8b5";
+
+        el.style.color=
+            "#a93226";
+
+    }
+    else{
+
+        el.style.backgroundColor=
+            "#e1f0fa";
+
+        el.style.borderColor=
+            "#b2d4ee";
+
+        el.style.color=
+            "#004080";
+    }
+}
+
+
+/* =========================================================
+   NOTICE TARGETS
+   ========================================================= */
+
+function setupTargets(){
+
+    $("target").innerHTML=
+        TARGETS
+            .map(
+                x=>
+                    `<option>${esc(x)}</option>`
+            )
+            .join("");
+
+    updateSections(
+        $("target").value
+    );
+}
+
+
+function updateSections(target){
+
+    let sections;
+
+    if(
+        [
+            "Class 11-12",
+            "Class 11",
+            "Class 12"
+        ].includes(target)
+    ){
+
+        sections=[
+            "All Sections",
+            "Section A",
+            "Section B",
+            "Section C",
+            "Section D"
+        ];
+
+    }
+    else if(
+        [
+            "Class 6-10",
+            "Class 6",
+            "Class 7",
+            "Class 8",
+            "Class 9",
+            "Class 10"
+        ].includes(target)
+    ){
+
+        sections=[
+            "All Sections",
+            "Section A",
+            "Section B"
+        ];
+
+    }
+    else{
+
+        sections=[
+            "All Sections",
+            "Section A",
+            "Section B",
+            "Section C",
+            "Section D"
+        ];
+    }
+
+    $("section").innerHTML=
+        sections
+            .map(
+                x=>
+                    `<option>${esc(x)}</option>`
+            )
+            .join("");
+}
+
+
+$("target").onchange=()=>{
+
+    const target=
+        $("target").value;
+
+    if(
+        target===
+        "Custom Selection / Range..."
+    ){
+
+        const custom=
+            prompt(
+                "Enter target class or range "+
+                "(e.g. 'Class 6, 8, 10' "+
+                "or 'Class 7-9'):"
+            );
+
+        if(
+            custom &&
+            custom.trim()
+        ){
+
+            let formatted=
+                custom.trim();
+
+            if(
+                !formatted
+                    .toLowerCase()
+                    .startsWith("class")
+            ){
+
+                formatted=
+                    "Class "+formatted;
+            }
+
+            let opt=
+                [
+                    ...$("target").options
+                ]
+                .find(
+                    o=>
+                        o.text===
+                        formatted
+                );
+
+            if(!opt){
+
+                opt=
+                    document.createElement(
+                        "option"
+                    );
+
+                opt.text=
+                    formatted;
+
+                $("target").insertBefore(
+                    opt,
+                    $("target").lastElementChild
+                );
+            }
+
+            $("target").value=
+                formatted;
+
+            updateSections(
+                formatted
+            );
+
+        }
+        else{
+
+            $("target").selectedIndex=0;
+
+        }
+
+    }
+    else{
+
+        updateSections(
+            target
+        );
+    }
+};
+
+
+/* =========================================================
+   PDF SELECTION
+   ========================================================= */
+
+let selectedPdf=null;
+
+
+$("uploadBtn").onclick=()=>
+    $("pdf").click();
+
+
+$("pdf").onchange=()=>{
+
+    selectedPdf=
+        $("pdf").files[0]||
+        null;
+
+    $("fileLabel").textContent=
+        selectedPdf
+            ? `PDF: ${selectedPdf.name}`
+            : "No PDF selected";
+};
+
+
+/* =========================================================
+   POST NOTICE
+   ========================================================= */
+
+async function postNotice(){
+
+    const title=
+        $("noticeTitle")
+            .value
+            .trim();
+
+    const body=
+        $("noticeBody")
+            .value
+            .trim();
+
+    const target=
+        $("target").value;
+
+    const section=
+        $("section").value;
+
+
+    if(
+        target===
+        "Custom Selection / Range..."
+    ){
+
+        modal(
+            "Warning",
+            "Please specify a valid class target."
+        );
+
+        return;
+    }
+
+
+    if(!title){
+
+        modal(
+            "Warning",
+            "Please enter a notice title."
+        );
+
+        return;
+    }
+
+
+    let pdfName=null;
+    let pdfData=null;
+    let pdfLocal=null;
+
+
+    if(selectedPdf){
+
+        try{
+
+            pdfName=
+                selectedPdf.name;
+
+            pdfData=
+                await uploadPdfToBackend(
+                    selectedPdf
+                );
+
+            if(
+                pdfData &&
+                typeof pdfData==="object"
+            ){
+
+                /*
+                 * A backend may return:
+                 * {
+                 *     local_path:"pdfs/example.pdf",
+                 *     pdf_name:"example.pdf"
+                 * }
+                 */
+                pdfLocal=
+                    pdfData.local_path||
+                    pdfData.path||
+                    null;
+
+                pdfName=
+                    pdfData.pdf_name||
+                    pdfData.filename||
+                    pdfName;
+
+            }
+
+        }
+        catch(error){
+
+            modal(
+                "PDF Error",
+                "Could not read or upload the selected PDF.\n\n"+
+                String(error.message||error)
+            );
+
+            return;
+        }
+    }
+
+
+    const data=
+        await readData();
+
+
+    if(!data.notices){
+        data.notices=[];
+    }
+
+
+    const noticeObj={
+
+        title:title,
+
+        content:body,
+
+        target:target,
+
+        section:section,
+
+        pdf:null,
+
+        pdf_local:pdfLocal,
+
+        pdf_name:pdfName,
+
+        pdf_data:
+            typeof pdfData==="string"
+                ? pdfData
+                : (
+                    pdfData &&
+                    pdfData.base64
+                        ? pdfData.base64
+                        : null
+                ),
+
+        timestamp:nowISO()
+    };
+
+
+    data.notices.push(
+        noticeObj
+    );
+
+
+    const saved=
+        await saveData(data);
+
+
+    if(!saved){
+
+        modal(
+            "Save Error",
+            "The notice could not be saved locally."
+        );
+
+        return;
+    }
+
+
+    $("noticeTitle").value="";
+
+    $("noticeBody").value="";
+
+    $("fileLabel").textContent=
+        "No PDF selected";
+
+    $("pdf").value="";
+
+    selectedPdf=null;
+
+
+    showBackendStatus(
+        BACKEND_BASE_URL
+            ? "Notice saved locally and sent to the network synchronization bridge."
+            : "Notice saved in browser storage. Configure the Python bridge to enable network synchronization."
+    );
+
+
+    toast(
+        "Notice published successfully!"
+    );
+
+
+    await loadNotices();
+}
+
+
+$("postBtn").onclick=
+    postNotice;
+
+
+/* =========================================================
+   LOAD NOTICES
+   ========================================================= */
+
+async function loadNotices(){
+
+    const data=
+        await readData();
+
+    const originalNotices=
+        Array.isArray(data.notices)
+            ? data.notices
+            : [];
+
+
+    const notices=
+        originalNotices.filter(
+            n=>
+                recent(
+                    n.timestamp
+                )
+        );
+
+
+    if(
+        originalNotices.length!==
+        notices.length
+    ){
+
+        data.notices=
+            notices;
+
+        await saveData(
+            data
+        );
+    }
+
+
+    $("noticeTable").innerHTML="";
+
+
+    notices.forEach(
+        (n,i)=>{
+
+            const d=
+                parseISO(
+                    n.timestamp
+                );
+
+
+            const pdfValue=
+                n.pdf_local||
+                n.pdf_name||
+                n.pdf;
+
+
+            const pdfText=
+                pdfValue
+                    ? getBasename(pdfValue)
+                    : "None";
+
+
+            const tr=
+                document.createElement("tr");
+
+
+            tr.innerHTML=`
+
+                <td>
+                    ${esc(
+                        `${n.target||""} (${n.section||""})`
+                    )}
+                </td>
+
+                <td>
+                    ${esc(
+                        n.title||""
+                    )}
+                </td>
+
+                <td>
+                    ${esc(
+                        pdfText
+                    )}
+                </td>
+
+                <td>
+                    ${
+                        d
+                            ? fmt(d)
+                            : "Recently"
+                    }
+                </td>
+
+                <td>
+                    <button
+                        class="btn-danger"
+                        type="button"
+                    >
+                        Delete
+                    </button>
+                </td>
+            `;
+
+
+            tr.querySelector(
+                "button"
+            ).onclick=
+                ()=>deleteNotice(i);
+
+
+            $("noticeTable")
+                .appendChild(tr);
+
+        }
+    );
+}
+
+
+function getBasename(path){
+
+    const value=
+        String(path||"")
+            .replace(/\\/g,"/");
+
+    const parts=
+        value.split("/");
+
+    return (
+        parts[parts.length-1]||
+        value
+    );
+}
+
+
+async function deleteNotice(i){
+
+    const data=
+        await readData();
+
+    if(
+        data.notices &&
+        i<data.notices.length
+    ){
+
+        data.notices.splice(
+            i,
+            1
+        );
+
+        await saveData(
+            data
+        );
+
+        await loadNotices();
+
+        toast(
+            "Notice deleted."
+        );
+    }
+}
+
+
+/* =========================================================
+   NOTICE HISTORY
+   ========================================================= */
+
+$("historyBtn").onclick=()=>{
+
+    window.location.href=
+        "notice.html";
+};
+
+
+/* =========================================================
+   SUBSTITUTIONS
+   ========================================================= */
+
+function updatePeriodPlaceholder(){
+
+    $("subPeriod").placeholder=
+        [
+            "11",
+            "12"
+        ].includes(
+            $("subClass")
+                .value
+                .trim()
+        )
+            ? "Period (1-9)"
+            : "Period (1-8)";
+}
+
+
+$("subClass").oninput=
+    updatePeriodPlaceholder;
+
+
+$("addSubBtn").onclick=
+    async()=>{
+
+        const c=
+            $("subClass")
+                .value
+                .trim();
+
+        const s=
+            $("subSec")
+                .value
+                .trim();
+
+        const p=
+            $("subPeriod")
+                .value
+                .trim();
+
+        const a=
+            $("subAbsent")
+                .value
+                .trim();
+
+        const st=
+            $("subSubstitute")
+                .value
+                .trim();
+
+
+        if(!(c&&s&&p&&st)){
+
+            modal(
+                "Warning",
+                "Please fill in required substitution fields."
+            );
+
+            return;
+        }
+
+
+        const data=
+            await readData();
+
+
+        if(!data.substitutions){
+            data.substitutions=[];
+        }
+
+
+        data.substitutions.push({
+
+            class:c,
+
+            section:s,
+
+            period:p,
+
+            absent:a,
+
+            substitute:st,
+
+            timestamp:nowISO()
+
+        });
+
+
+        await saveData(
+            data
+        );
+
+
+        [
+            "subClass",
+            "subSec",
+            "subPeriod",
+            "subAbsent",
+            "subSubstitute"
+        ]
+        .forEach(
+            id=>
+                $(id).value=""
+        );
+
+
+        await loadSubstitutions();
+
+        toast(
+            "Substitution added."
+        );
+    };
+
+
+async function loadSubstitutions(){
+
+    const data=
+        await readData();
+
+
+    const originalSubs=
+        Array.isArray(
+            data.substitutions
+        )
+            ? data.substitutions
+            : [];
+
+
+    const subs=
+        originalSubs.filter(
+            s=>
+                recent(
+                    s.timestamp,
+                    12
+                )
+        );
+
+
+    if(
+        originalSubs.length!==
+        subs.length
+    ){
+
+        data.substitutions=
+            subs;
+
+        await saveData(
+            data
+        );
+    }
+
+
+    $("subTable").innerHTML="";
+
+
+    subs.forEach(
+        (s,i)=>{
+
+            const dt=
+                parseISO(
+                    s.timestamp
+                );
+
+
+            const tr=
+                document.createElement("tr");
+
+
+            tr.innerHTML=`
+
+                <td>
+                    ${esc(
+                        s.class||""
+                    )}
+                </td>
+
+                <td>
+                    ${esc(
+                        s.section||""
+                    )}
+                </td>
+
+                <td>
+                    ${esc(
+                        s.period||""
+                    )}
+                </td>
+
+                <td>
+                    ${esc(
+                        s.absent||""
+                    )}
+                </td>
+
+                <td>
+                    ${esc(
+                        s.substitute||""
+                    )}
+                </td>
+
+                <td>
+                    ${
+                        dt
+                            ? fmt(dt)
+                            : "Recently"
+                    }
+                </td>
+
+                <td>
+                    <button
+                        class="btn-danger"
+                        type="button"
+                    >
+                        Delete
+                    </button>
+                </td>
+            `;
+
+
+            tr.querySelector(
+                "button"
+            ).onclick=
+                ()=>deleteSubstitution(i);
+
+
+            $("subTable")
+                .appendChild(tr);
+
+        }
+    );
+}
+
+
+async function deleteSubstitution(i){
+
+    const data=
+        await readData();
+
+
+    if(
+        data.substitutions &&
+        i<data.substitutions.length
+    ){
+
+        data.substitutions.splice(
+            i,
+            1
+        );
+
+        await saveData(
+            data
+        );
+
+        await loadSubstitutions();
+
+        toast(
+            "Substitution deleted."
+        );
+    }
+}
+
+
+/* =========================================================
+   ATTENDANCE
+   ========================================================= */
+
+function setupAttendance(){
+
+    $("attClass").innerHTML=
+        Array
+            .from(
+                {
+                    length:7
+                },
+                (_,i)=>
+                    `<option>Class ${i+6}</option>`
+            )
+            .join("");
+
+
+    updateAttSections(
+        $("attClass").value
+    );
+}
+
+
+$("attClass").onchange=()=>
+    updateAttSections(
+        $("attClass").value
+    );
+
+
+function updateAttSections(c){
+
+    const arr=
+        [
+            "Class 11",
+            "Class 12"
+        ].includes(c)
+
+            ? [
+                "Section A",
+                "Section B",
+                "Section C",
+                "Section D"
+            ]
+
+            : [
+                "Section A",
+                "Section B"
+            ];
+
+
+    $("attSec").innerHTML=
+        arr
+            .map(
+                x=>
+                    `<option>${esc(x)}</option>`
+            )
+            .join("");
+}
+
+
+$("enterAttendance").onclick=()=>{
+
+    const selectedClass=
+        $("attClass").value;
+
+    const selectedSection=
+        $("attSec").value;
+
+
+    const url=
+        ATTENDANCE_PAGE+
+        "?class="+
+        encodeURIComponent(
+            selectedClass
+        )+
+        "&section="+
+        encodeURIComponent(
+            selectedSection
+        );
+
+
+    window.location.href=
+        url;
+};
+
+
+/* =========================================================
+   CREDENTIALS
+   ========================================================= */
+
+async function initialiseCredentials(){
+
+    const credentials=
+        await loadCredentials();
+
+
+    $("newAdminId").value=
+        credentials.admin_id||"";
+
+
+    $("newAdminPass").value=
+        credentials.password||"";
+}
+
+
+$("saveCreds").onclick=
+    async()=>{
+
+        const id=
+            $("newAdminId")
+                .value
+                .trim();
+
+        const pw=
+            $("newAdminPass")
+                .value
+                .trim();
+
+
+        if(!id||!pw){
+
+            modal(
+                "Warning",
+                "Admin ID and Password cannot be empty."
+            );
+
+            return;
+        }
+
+
+        try{
+
+            await saveCredentialsToBackend(
+                id,
+                pw
+            );
+
+
+            toast(
+                "Admin credentials updated successfully!"
+            );
+
+        }
+        catch(error){
+
+            modal(
+                "Save Error",
+                "Could not save credentials.\n\n"+
+                String(
+                    error.message||error
+                )
+            );
+        }
+    };
+
+
+/* =========================================================
+   HELP
+   ========================================================= */
+
+$("helpBtn").onclick=()=>{
+
+    window.location.href=
+        "help.html";
+};
+
+
+/* =========================================================
+   LOGOUT / RETURN TO ADMINPAGE
+   ========================================================= */
+
+$("logoutBtn").onclick=()=>{
+
+    if(
+        confirm(
+            "Are you sure you want to log out "+
+            "of the classroom system?"
+        )
+    ){
+
+        /*
+         * Equivalent of launching adminpage.py
+         * from the original desktop application.
+         *
+         * Browser counterpart:
+         */
+        window.location.href=
+            "adminpage.html?exited=true";
+    }
+};
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+document
+    .querySelectorAll(".nav button")
+    .forEach(
+        btn=>{
+
+            btn.onclick=()=>{
+
+                document
+                    .querySelectorAll(
+                        ".nav button"
+                    )
+                    .forEach(
+                        b=>
+                            b.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                btn.classList.add(
+                    "active"
+                );
+
+
+                document
+                    .querySelectorAll(
+                        ".page"
+                    )
+                    .forEach(
+                        p=>
+                            p.classList.remove(
+                                "active"
+                            )
+                    );
+
+
+                $("page-"+btn.dataset.page)
+                    .classList.add(
+                        "active"
+                    );
+            };
+        }
+    );
+
+
+/* =========================================================
+   DATE / TIME
+   ========================================================= */
+
+function fmt(d){
+
+    return d.toLocaleDateString(
+        undefined,
+        {
+            month:"short",
+            day:"2-digit"
+        }
+    )+
+    ", "+
+    d.toLocaleTimeString(
+        undefined,
+        {
+            hour:"2-digit",
+            minute:"2-digit",
+            hour12:true
+        }
+    );
+}
+
+
+function updateTime(){
+
+    const d=
+        new Date();
+
+    $("timeLabel").textContent=
+        d.toLocaleDateString(
+            undefined,
+            {
+                weekday:"short",
+                month:"short",
+                day:"numeric"
+            }
+        )+
+        ", "+
+        d.toLocaleTimeString(
+            undefined,
+            {
+                hour:"numeric",
+                minute:"2-digit",
+                hour12:true
+            }
+        );
+}
+
+
+setInterval(
+    updateTime,
+    1000
+);
+
+updateTime();
+
+
+/* =========================================================
+   ANIMATED BACKGROUND
+   ========================================================= */
+
+const canvas=
+    $("bg");
+
+const ctx=
+    canvas.getContext(
+        "2d"
+    );
+
+let bubbles=[];
+
+let phase=0;
+
+
+function resizeCanvas(){
+
+    canvas.width=
+        innerWidth*
+        devicePixelRatio;
+
+    canvas.height=
+        innerHeight*
+        devicePixelRatio;
+
+    canvas.style.width=
+        innerWidth+"px";
+
+    canvas.style.height=
+        innerHeight+"px";
+
+
+    ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+
+
+    if(!bubbles.length){
+
+        bubbles=
+            Array.from(
+                {
+                    length:25
+                },
+                ()=>
+                    new Bubble(
+                        innerWidth,
+                        innerHeight
+                    )
+            );
+    }
+}
+
+
+class Bubble{
+
+    constructor(
+        width,
+        height
+    ){
+
+        this.reset(
+            width,
+            height,
+            true
+        );
+    }
+
+
+    reset(
+        width,
+        height,
+        firstTime=false
+    ){
+
+        this.x=
+            Math.random()*
+            (
+                width>0
+                    ? width
+                    : 1000
+            );
+
+
+        this.y=
+            firstTime
+                ? Math.random()*height
+                : height+
+                    10+
+                    Math.random()*40;
+
+
+        this.radius=
+            12+
+            Math.random()*23;
+
+
+        this.speed=
+            .4+
+            Math.random()*.8;
+
+
+        this.opacity=
+            25+
+            Math.random()*50;
+
+
+        this.wobbleSpeed=
+            .02+
+            Math.random()*.03;
+
+
+        this.wobble=
+            Math.random()*6.28;
+    }
+
+
+    update(
+        width,
+        height
+    ){
+
+        this.y-=
+            this.speed;
+
+
+        this.wobble+=
+            this.wobbleSpeed;
+
+
+        this.x+=
+            Math.sin(
+                this.wobble
+            )*.5;
+
+
+        if(
+            this.y<
+            -this.radius*2
+        ){
+
+            this.reset(
+                width,
+                height
+            );
+        }
+    }
+}
+
+
+function wave(
+    height,
+    offsetY,
+    amplitude,
+    frequency,
+    alpha,
+    phaseShift
+){
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        height
+    );
+
+    ctx.lineTo(
+        0,
+        offsetY
+    );
+
+
+    for(
+        let x=0;
+        x<=innerWidth;
+        x+=10
+    ){
+
+        const y=
+            offsetY+
+            Math.sin(
+                x*frequency+
+                phaseShift
+            )*
+            amplitude;
+
+
+        ctx.lineTo(
+            x,
+            y
+        );
+    }
+
+
+    ctx.lineTo(
+        innerWidth,
+        height
+    );
+
+    ctx.closePath();
+
+
+    ctx.fillStyle=
+        `rgba(
+            0,
+            ${alpha===25?150:alpha===20?110:160},
+            220,
+            ${alpha/255}
+        )`;
+
+
+    ctx.fill();
+}
+
+
+function animateBg(){
+
+    ctx.clearRect(
+        0,
+        0,
+        innerWidth,
+        innerHeight
+    );
+
+
+    ctx.fillStyle=
+        "#eaf5fc";
+
+
+    ctx.fillRect(
+        0,
+        0,
+        innerWidth,
+        innerHeight
+    );
+
+
+    wave(
+        innerHeight,
+        innerHeight*.45,
+        25,
+        .008,
+        25,
+        phase
+    );
+
+
+    wave(
+        innerHeight,
+        innerHeight*.55,
+        35,
+        .005,
+        20,
+        phase*.7
+    );
+
+
+    wave(
+        innerHeight,
+        innerHeight*.65,
+        20,
+        .01,
+        30,
+        phase*1.3
+    );
+
+
+    for(
+        const b of bubbles
+    ){
+
+        b.update(
+            innerWidth,
+            innerHeight
+        );
+
+
+        ctx.beginPath();
+
+        ctx.fillStyle=
+            `rgba(
+                255,
+                255,
+                255,
+                ${b.opacity/255}
+            )`;
+
+        ctx.arc(
+            b.x,
+            b.y,
+            b.radius,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+
+
+        ctx.beginPath();
+
+        ctx.fillStyle=
+            `rgba(
+                0,
+                150,
+                220,
+                ${(b.opacity*.4)/255}
+            )`;
+
+        ctx.arc(
+            b.x-b.radius*.3,
+            b.y-b.radius*.3,
+            b.radius*.35,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+    }
+
+
+    phase+=.02;
+
+    requestAnimationFrame(
+        animateBg
+    );
+}
+
+
+addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+resizeCanvas();
+
+animateBg();
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+setupTargets();
+
+setupAttendance();
+
+initialiseCredentials();
+
+loadNotices();
+
+loadSubstitutions();
+
+</script>
+
+</body>
+</html>
