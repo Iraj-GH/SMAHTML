@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOS School - Notice Archives & Cloud Audit Log</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background-color: #eaf5fc;
+            color: #1a2a3a;
+        }
+
+        body {
+            overflow: hidden;
+        }
+
+        .window {
+            width: 100%;
+            height: 100vh;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            min-height: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-button {
+            height: 34px;
+            background-color: #e1f0fa;
+            color: #0066b2;
+            border-radius: 6px;
+            font-weight: bold;
+            padding: 0 12px;
+            border: 1px solid #b2d4ee;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.15s ease;
+        }
+
+        .back-button:hover {
+            background-color: #cbe3f5;
+        }
+
+        .header-spacing {
+            width: 15px;
+            flex-shrink: 0;
+        }
+
+        .title {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: #004080;
+            background: transparent;
+            white-space: nowrap;
+        }
+
+        .header-spacer {
+            flex: 1;
+        }
+
+        .refresh-button {
+            height: 34px;
+            background-color: #0077c8;
+            color: #ffffff;
+            border-radius: 6px;
+            font-weight: bold;
+            padding: 0 15px;
+            border: none;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.15s ease;
+        }
+
+        .refresh-button:hover {
+            background-color: #005fa3;
+        }
+
+        /* Card */
+        .card-frame {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            border: 1px solid #cbe3f5;
+            padding: 15px;
+        }
+
+        .card-layout {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Table */
+        .table-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            border: 1px solid #b2d4ee;
+        }
+
+        table {
+            width: 100%;
+            min-width: 700px;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+            background-color: #ffffff;
+            color: #1a2a3a;
+        }
+
+        thead th {
+            background-color: #0077c8;
+            color: #ffffff;
+            border: none;
+            padding: 8px;
+            font-weight: bold;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        thead th:first-child {
+            border-top-left-radius: 7px;
+        }
+
+        thead th:last-child {
+            border-top-right-radius: 7px;
+        }
+
+        tbody td {
+            background-color: #ffffff;
+            color: #1a2a3a;
+            border-right: 1px solid #e1f0fa;
+            border-bottom: 1px solid #e1f0fa;
+            padding: 8px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+            vertical-align: middle;
+            word-wrap: break-word;
+            overflow-wrap: anywhere;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody td:last-child {
+            border-right: none;
+        }
+
+        tbody tr:hover td {
+            background-color: #f5faff;
+        }
+
+        /* Equivalent to QHeaderView.ResizeMode.Stretch */
+        th:nth-child(1),
+        td:nth-child(1) {
+            width: 20%;
+        }
+
+        th:nth-child(2),
+        td:nth-child(2) {
+            width: 20%;
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+            width: 20%;
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+            width: 20%;
+        }
+
+        th:nth-child(5),
+        td:nth-child(5) {
+            width: 20%;
+        }
+
+        /* Scrollbar styling */
+        .table-container::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #eaf5fc;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: #b2d4ee;
+            border-radius: 5px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #8fbddd;
+        }
+
+        /* Message dialog */
+        .dialog-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.28);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .dialog-overlay.visible {
+            display: flex;
+        }
+
+        .dialog {
+            width: min(460px, calc(100% - 40px));
+            background: #ffffff;
+            border-radius: 10px;
+            border: 1px solid #cbe3f5;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+            overflow: hidden;
+        }
+
+        .dialog-title {
+            padding: 15px 18px;
+            background: #eaf5fc;
+            color: #004080;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .dialog-message {
+            padding: 18px;
+            color: #1a2a3a;
+            font-size: 14px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 18px 15px;
+        }
+
+        .dialog-button {
+            background: #0077c8;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .dialog-button:hover {
+            background: #005fa3;
+        }
+
+        /* Responsive fallback */
+        @media (max-width: 750px) {
+            body {
+                overflow: auto;
+            }
+
+            .window {
+                min-height: 100vh;
+                height: auto;
+                padding: 15px;
+            }
+
+            .header {
+                flex-wrap: wrap;
+                height: auto;
+                min-height: 34px;
+                gap: 8px;
+            }
+
+            .header-spacing {
+                display: none;
+            }
+
+            .title {
+                order: 3;
+                width: 100%;
+            }
+
+            .header-spacer {
+                display: none;
+            }
+
+            .refresh-button {
+                margin-left: auto;
+            }
+
+            .card-frame {
+                min-height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="window">
+
+        <header class="header">
+
+            <button
+                id="backButton"
+                class="back-button"
+                type="button"
+                title="Back to Admin Panel"
+            >
+                ⬅ Back to Admin Panel
+            </button>
+
+            <div class="header-spacing"></div>
+
+            <h1 class="title">
+                📚 Managed Notice Archive (Cloud Synced)
+            </h1>
+
+            <div class="header-spacer"></div>
+
+            <button
+                id="refreshButton"
+                class="refresh-button"
+                type="button"
+                title="Refresh Archives"
+            >
+                🔄 Refresh Archives
+            </button>
+
+        </header>
+
+        <section class="card-frame">
+            <div class="card-layout">
+
+                <div class="table-container">
+                    <table id="archiveTable">
+                        <thead>
+                            <tr>
+                                <th>Target Group</th>
+                                <th>Notice Title</th>
+                                <th>Content Body</th>
+                                <th>PDF Attachment</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="archiveTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- QMessageBox equivalent -->
+    <div id="dialogOverlay" class="dialog-overlay">
+        <div class="dialog" role="dialog" aria-modal="true">
+
+            <div id="dialogTitle" class="dialog-title">
+                Message
+            </div>
+
+            <div id="dialogMessage" class="dialog-message">
+            </div>
+
+            <div class="dialog-actions">
+                <button id="dialogOk" class="dialog-button" type="button">
+                    OK
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /*
+         * notice.py equivalent
+         *
+         * DATA_FILE = "data.json"
+         * RECOGNITION_COOLDOWN_SECONDS = 15
+         *
+         * The original Python application obtains data through:
+         *
+         *     fetch_network_data(DATA_FILE)
+         *
+         * The browser equivalent first attempts to retrieve the same
+         * data through the network endpoint and then falls back to
+         * data.json when available.
+         */
+
+        const DATA_FILE = "data.json";
+        const RECOGNITION_COOLDOWN_SECONDS = 15;
+
+        const archiveTableBody =
+            document.getElementById("archiveTableBody");
+
+        const refreshButton =
+            document.getElementById("refreshButton");
+
+        const backButton =
+            document.getElementById("backButton");
+
+        const dialogOverlay =
+            document.getElementById("dialogOverlay");
+
+        const dialogTitle =
+            document.getElementById("dialogTitle");
+
+        const dialogMessage =
+            document.getElementById("dialogMessage");
+
+        const dialogOk =
+            document.getElementById("dialogOk");
+
+
+        /*
+         * QMessageBox.warning equivalent.
+         */
+        function showWarning(title, message) {
+            dialogTitle.textContent = title;
+            dialogMessage.textContent = message;
+            dialogOverlay.classList.add("visible");
+        }
+
+        function closeDialog() {
+            dialogOverlay.classList.remove("visible");
+        }
+
+        dialogOk.addEventListener("click", closeDialog);
+
+        dialogOverlay.addEventListener("click", function(event) {
+            if (event.target === dialogOverlay) {
+                closeDialog();
+            }
+        });
+
+
+        /*
+         * Equivalent of:
+         *
+         * os.path.basename(n.get("pdf"))
+         */
+        function getBasename(path) {
+            if (!path) {
+                return "None";
+            }
+
+            const normalized = String(path).replace(/\\/g, "/");
+            const parts = normalized.split("/");
+
+            return parts[parts.length - 1] || "None";
+        }
+
+
+        /*
+         * Equivalent of:
+         *
+         * datetime.datetime.fromisoformat(ts_str)
+         * dt_obj.strftime("%b %d, %Y - %I:%M %p")
+         */
+        function formatTimestamp(timestamp) {
+            if (!timestamp) {
+                return "N/A";
+            }
+
+            try {
+                const date = new Date(timestamp);
+
+                if (Number.isNaN(date.getTime())) {
+                    return timestamp;
+                }
+
+                const months = [
+                    "Jan", "Feb", "Mar", "Apr",
+                    "May", "Jun", "Jul", "Aug",
+                    "Sep", "Oct", "Nov", "Dec"
+                ];
+
+                const month = months[date.getMonth()];
+
+                const day =
+                    String(date.getDate()).padStart(2, "0");
+
+                const year = date.getFullYear();
+
+                let hours = date.getHours();
+                const minutes =
+                    String(date.getMinutes()).padStart(2, "0");
+
+                const period = hours >= 12 ? "PM" : "AM";
+
+                hours = hours % 12;
+
+                if (hours === 0) {
+                    hours = 12;
+                }
+
+                const hour =
+                    String(hours).padStart(2, "0");
+
+                return `${month} ${day}, ${year} - ${hour}:${minutes} ${period}`;
+
+            } catch (error) {
+                return timestamp || "N/A";
+            }
+        }
+
+
+        /*
+         * Safely create table cells.
+         */
+        function createCell(value) {
+            const cell = document.createElement("td");
+            cell.textContent =
+                value === null ||
+                value === undefined ||
+                value === ""
+                    ? ""
+                    : String(value);
+
+            return cell;
+        }
+
+
+        /*
+         * Equivalent of:
+         *
+         * self.table_archive.setRowCount(len(notices))
+         *
+         * followed by setItem(...)
+         */
+        function populateArchiveTable(notices) {
+            archiveTableBody.innerHTML = "";
+
+            notices.forEach(function(n) {
+
+                const row = document.createElement("tr");
+
+                const target =
+                    n && n.target !== undefined
+                        ? n.target
+                        : "All";
+
+                const section =
+                    n && n.section !== undefined
+                        ? n.section
+                        : "";
+
+                const targetString =
+                    `${target} (${section})`;
+
+                const title =
+                    n && n.title !== undefined
+                        ? n.title
+                        : "";
+
+                const content =
+                    n && n.content !== undefined
+                        ? n.content
+                        : "No body text";
+
+                const pdfValue =
+                    n && n.pdf
+                        ? getBasename(n.pdf)
+                        : "None";
+
+                const timestamp =
+                    n && n.timestamp !== undefined
+                        ? n.timestamp
+                        : "";
+
+                const timeDisplay =
+                    formatTimestamp(timestamp);
+
+                row.appendChild(createCell(targetString));
+                row.appendChild(createCell(title));
+                row.appendChild(createCell(content));
+                row.appendChild(createCell(pdfValue));
+                row.appendChild(createCell(timeDisplay));
+
+                archiveTableBody.appendChild(row);
+            });
+        }
+
+
+        /*
+         * Network bridge.
+         *
+         * This is the browser counterpart of:
+         *
+         *     fetch_network_data(DATA_FILE)
+         *
+         * If your existing network_sync.py exposes an HTTP/API endpoint,
+         * replace the URL below with that endpoint. The rest of the
+         * application remains unchanged.
+         */
+        async function fetchNetworkData(filename) {
+
+            /*
+             * Attempt to retrieve the data through the configured
+             * network endpoint first.
+             */
+            try {
+                const response = await fetch(filename, {
+                    method: "GET",
+                    cache: "no-cache"
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    if (data) {
+                        return data;
+                    }
+                }
+
+            } catch (networkError) {
+                /*
+                 * Continue to the local fallback exactly as the
+                 * Python implementation does.
+                 */
+            }
+
+            /*
+             * Local JSON fallback.
+             */
+            try {
+                const response = await fetch(DATA_FILE, {
+                    method: "GET",
+                    cache: "no-cache"
+                });
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}: ${response.statusText}`
+                    );
+                }
+
+                return await response.json();
+
+            } catch (error) {
+                throw error;
+            }
+        }
+
+
+        /*
+         * Equivalent of load_archive_data().
+         */
+        async function loadArchiveData() {
+
+            refreshButton.disabled = true;
+            refreshButton.textContent = "🔄 Refreshing...";
+
+            try {
+
+                const data =
+                    await fetchNetworkData(DATA_FILE);
+
+                /*
+                 * Equivalent to:
+                 *
+                 * notices = data.get("notices", [])
+                 * if isinstance(data, dict)
+                 */
+                const notices =
+                    data &&
+                    typeof data === "object" &&
+                    !Array.isArray(data)
+                        ? (
+                            Array.isArray(data.notices)
+                                ? data.notices
+                                : []
+                        )
+                        : [];
+
+                /*
+                 * Do NOT filter by is_recent().
+                 * Every notice is displayed.
+                 */
+                populateArchiveTable(notices);
+
+            } catch (error) {
+
+                showWarning(
+                    "Sync Error",
+                    "Could not parse cloud payload data securely:\n" +
+                    (error && error.message
+                        ? error.message
+                        : String(error))
+                );
+
+            } finally {
+
+                refreshButton.disabled = false;
+                refreshButton.textContent =
+                    "🔄 Refresh Archives";
+            }
+        }
+
+
+        /*
+         * Equivalent of:
+         *
+         * btn_back.clicked.connect(self.return_to_admin)
+         */
+        function returnToAdmin() {
+
+            /*
+             * PyQt:
+             *
+             * admin_panel.py
+             *
+             * Web:
+             *
+             * admin_panel.html
+             */
+            window.location.href = "admin_panel.html";
+        }
+
+
+        /*
+         * Equivalent of:
+         *
+         * self.refresh_btn.clicked.connect(self.load_archive_data)
+         */
+        refreshButton.addEventListener(
+            "click",
+            loadArchiveData
+        );
+
+        backButton.addEventListener(
+            "click",
+            returnToAdmin
+        );
+
+
+        /*
+         * Equivalent of:
+         *
+         * self.load_archive_data()
+         *
+         * at the end of init_ui().
+         */
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+                loadArchiveData();
+            }
+        );
+
+    </script>
+
+</body>
+</html>
